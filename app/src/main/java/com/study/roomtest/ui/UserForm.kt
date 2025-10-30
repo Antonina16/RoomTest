@@ -42,7 +42,7 @@ fun UserForm(
     val uiState by userViewModel.uiState.collectAsState()
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
+    val isSaveEnabled by userViewModel.isSaveEnabled.collectAsState()
 
     Column(
         modifier = Modifier
@@ -70,7 +70,9 @@ fun UserForm(
 
         Button(
             onClick = { userViewModel.saveUser() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isSaveEnabled
+
         ) {
             Text("Save User")
         }

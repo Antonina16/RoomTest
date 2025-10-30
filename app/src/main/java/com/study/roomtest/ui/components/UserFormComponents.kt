@@ -4,13 +4,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.study.roomtest.ui.DebouncedValidatedTextField
+import com.study.roomtest.ui.PhoneNumberField
 import com.study.roomtest.viewmodels.UserField
 import com.study.roomtest.viewmodels.UserState
 import com.study.roomtest.viewmodels.UserViewModel
@@ -20,29 +25,41 @@ fun UserInfoFields(uiState: UserState, userViewModel: UserViewModel) {
     Text("User Information", style = MaterialTheme.typography.headlineSmall)
     Spacer(modifier = Modifier.height(16.dp))
 
-    ValidatedOutlinedTextField(
-        value = uiState.firstName,
-        onValueChange = { userViewModel.onFieldChange(it, UserField.FIRST_NAME) },
+    DebouncedValidatedTextField(
         label = "First Name",
-        errorMessage = uiState.firstNameError
+        initialValue = uiState.firstName,
+        validator = { userViewModel.validateField(UserField.FIRST_NAME, it) },
+        onDone = { userViewModel.onFieldChange(it, UserField.FIRST_NAME) },
+        modifier = Modifier.width(300.dp),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
     )
-    ValidatedOutlinedTextField(
-        value = uiState.lastName,
-        onValueChange = { userViewModel.onFieldChange(it, UserField.LAST_NAME) },
+    DebouncedValidatedTextField(
         label = "Last Name",
-        errorMessage = uiState.lastNameError
+        initialValue = uiState.lastName,
+        validator = { userViewModel.validateField(UserField.LAST_NAME, it) },
+        onDone = { userViewModel.onFieldChange(it, UserField.LAST_NAME) },
+        modifier = Modifier.width(300.dp),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
     )
-    ValidatedOutlinedTextField(
-        value = uiState.emailAddress,
-        onValueChange = { userViewModel.onFieldChange(it, UserField.EMAIL_ADDRESS) },
+    DebouncedValidatedTextField(
         label = "Email",
-        errorMessage = uiState.lastNameError
+        initialValue = uiState.emailAddress,
+        validator = { userViewModel.validateField(UserField.EMAIL_ADDRESS, it) },
+        onDone = { userViewModel.onFieldChange(it, UserField.EMAIL_ADDRESS) },
+        modifier = Modifier.width(300.dp),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        )
     )
-    ValidatedOutlinedTextField(
-        value = uiState.phoneNumber,
-        onValueChange = { userViewModel.onFieldChange(it, UserField.PHONE_NUMBER) },
-        label = "PhoneNumber",
-        errorMessage = uiState.phoneNumberError
+    PhoneNumberField(
+        initialValue = uiState.phoneNumber,
+        onNumberComplete = { phone ->
+            userViewModel.onFieldChange(phone, UserField.PHONE_NUMBER)
+        },
+        validator = { userViewModel.validateField( UserField.PHONE_NUMBER, it,) },
+        modifier = Modifier.width(300.dp)
+
     )
     // TODO: add rest of the fields
 }
@@ -51,12 +68,16 @@ fun UserInfoFields(uiState: UserState, userViewModel: UserViewModel) {
 fun HomeAddressFields(uiState: UserState, userViewModel: UserViewModel) {
     Text("Home Address", style = MaterialTheme.typography.headlineSmall)
     Spacer(modifier = Modifier.height(16.dp))
-    ValidatedOutlinedTextField(
-        value = uiState.city,
-        onValueChange = { userViewModel.onFieldChange(it, UserField.CITY) },
+
+    DebouncedValidatedTextField(
         label = "City",
-        errorMessage = null
+        initialValue = uiState.city,
+        validator = { userViewModel.validateField(UserField.CITY, it) },
+        onDone = { userViewModel.onFieldChange(it, UserField.CITY) },
+        modifier = Modifier.width(300.dp),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
     )
+
     // TODO: rest of the Address fields
     // ... OutlinedTextFields for all address fields
 }

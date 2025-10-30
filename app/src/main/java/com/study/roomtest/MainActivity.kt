@@ -27,27 +27,34 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                Scaffold { innerPadding ->
+                Scaffold()
+                { innerPadding ->
                     Column(
                         Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
+                        UserForm(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        )
 
-                        UserForm()
+                        Spacer(Modifier.height(8.dp))
                         ItemListScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
-
                         )
-
                     }
                 }
             }
         }
     }
 }
+
+
+
 
 
 
