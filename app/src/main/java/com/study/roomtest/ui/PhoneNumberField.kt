@@ -61,14 +61,14 @@ class PhoneMaskTransformation : VisualTransformation {
 
             // masked (0..19) -> raw (0..9)
             override fun transformedToOriginal(offset: Int): Int = when {
-                offset <= 6  -> 0                         // до первых цифр
-                offset <= 8  -> offset - 6                // в зоне первых 2 цифр
-                offset <= 10 -> 2                         // внутри ") "
-                offset <= 13 -> offset - 8                // 3 цифры после ") "
-                offset <= 14 -> 5                         // внутри первого '-'
-                offset <= 16 -> offset - 9                // 2 цифры после первого '-'
-                offset <= 17 -> 7                         // внутри второго '-'
-                else         -> offset - 10               // 2 последние цифры
+                offset <= 6  -> 0                         // before digits
+                offset <= 8  -> offset - 6                // first 2 digits
+                offset <= 10 -> 2                         // inside ") "
+                offset <= 13 -> offset - 8                // 3 digits after ") "
+                offset <= 14 -> 5                         // inside first '-'
+                offset <= 16 -> offset - 9                // 2 digits after the first '-'
+                offset <= 17 -> 7                         // inside the second '-'
+                else         -> offset - 10               // 2 last digits
             }.coerceIn(0, raw.length)
         }
 
@@ -136,11 +136,11 @@ fun PhoneNumberField(
 }
 private fun normalizeToRaw(input: String): String {
     var d = input.filter { it.isDigit() }
-    d = when {
-        d.startsWith("380") -> "0" + d.drop(3)
-        d.startsWith("38")  -> "0" + d.drop(2)
-        else                -> d
-    }
+//    d = when {
+//        d.startsWith("380") -> "0" + d.drop(3)
+//        d.startsWith("38")  -> "0" + d.drop(2)
+//        else                -> d
+//    }
     if (d.startsWith("0")) d = d.drop(1)
     return d.take(9)
 }
